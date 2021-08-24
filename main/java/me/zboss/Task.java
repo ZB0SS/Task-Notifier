@@ -24,7 +24,7 @@ public class Task {
         }
     }
 
-    public void setTime() {
+    public void setTask() {
         String[] timesString = this.time.split(":");
         for (String time: timesString) {
             times.add(Integer.parseInt(time));
