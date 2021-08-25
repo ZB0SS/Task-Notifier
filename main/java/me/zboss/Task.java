@@ -1,8 +1,9 @@
 package me.zboss;
 
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.util.*;
+import java.awt.*;
+import java.awt.TrayIcon.MessageType;
 
 public class Task {
     final private String taskName;
@@ -56,12 +57,16 @@ public class Task {
 
             String taskName = this.getTaskName();
             Timer myTimer = new Timer();
-
             TimerTask myTask = new TimerTask() {
                 @Override
                 public void run() {
                     if (!remove) {
                         System.out.println("Its time for your task " + taskName);
+                        try {
+                            displayTray();
+                        } catch (AWTException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             };
@@ -96,6 +101,18 @@ public class Task {
         } else {
             return null;
         }
+    }
+
+    public void displayTray() throws AWTException{
+        // Windows notification
+        SystemTray tray = SystemTray.getSystemTray();
+        Image image = Toolkit.getDefaultToolkit().createImage("..\\..\\..\\..\\..\\timer.png");
+        TrayIcon trayIcon = new TrayIcon(image, "Tray Demo");
+        trayIcon.setImageAutoSize(true);
+        trayIcon.setToolTip("System tray icon demo");
+        tray.add(trayIcon);
+
+        trayIcon.displayMessage("Task: " + this.getTaskName(), "Its time for your task " + this.getTaskName(), MessageType.NONE);
     }
 
 }
