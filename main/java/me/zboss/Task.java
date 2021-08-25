@@ -23,41 +23,51 @@ public class Task {
         } else {
             tasks.put(taskName, time + " (PM)");
         }
+        getTask.put(this.taskName, this);
     }
 
     public void setTask() {
         ArrayList<Integer> times = new ArrayList<Integer>();
+        boolean goOn = false;
+        try {
+            String[] timesString = this.time.split(":");
+            goOn = true;
+        } catch (Exception e) {
+            System.out.println("You didn't enter a valid time");
 
-        String[] timesString = this.time.split(":");
-        for (String time: timesString) {
-            times.add(Integer.parseInt(time));
         }
-
-        // The time now
-        LocalDateTime localDateTime = LocalDateTime.now();
-        // If its pm then add 12 eg(1 + 12 = 13)
-        if (!isAM) {
-            times.set(0, times.get(0) + 12);
-        }
-
-        int hoursAway = times.get(0) - localDateTime.getHour();
-        int minutesAway = times.get(1) - localDateTime.getMinute();
-
-        long millisecondsAway = ((minutesAway * 60L + (hoursAway * 60L) * 60) * 1000) - localDateTime.getSecond() * 1000;
-
-        String taskName = this.getTaskName();
-        Timer myTimer = new Timer();
-
-        TimerTask myTask = new TimerTask() {
-            @Override
-            public void run() {
-                if (!remove) {
-                   System.out.println("Its time for your task " + taskName);
-                }
+        if  (goOn) {
+            String[] timesString = this.time.split(":");
+            for (String time : timesString) {
+                times.add(Integer.parseInt(time));
             }
-        };
 
-        myTimer.schedule(myTask, millisecondsAway);
+            // The time now
+            LocalDateTime localDateTime = LocalDateTime.now();
+            // If its pm then add 12 eg(1 + 12 = 13)
+            if (!isAM) {
+                times.set(0, times.get(0) + 12);
+            }
+
+            int hoursAway = times.get(0) - localDateTime.getHour();
+            int minutesAway = times.get(1) - localDateTime.getMinute();
+
+            long millisecondsAway = ((minutesAway * 60L + (hoursAway * 60L) * 60) * 1000) - localDateTime.getSecond() * 1000;
+
+            String taskName = this.getTaskName();
+            Timer myTimer = new Timer();
+
+            TimerTask myTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if (!remove) {
+                        System.out.println("Its time for your task " + taskName);
+                    }
+                }
+            };
+
+            myTimer.schedule(myTask, millisecondsAway);
+        }
     }
 
     public String getTaskName() {
@@ -81,12 +91,11 @@ public class Task {
     }
 
     public static Task getTaskByTaskName(String name) {
-        for (String task: getTask.keySet()) {
-            if (Objects.equals(task, name)) {
-                return  getTask.get(task);
-            }
+        if (getTask.containsKey(name)) {
+            return getTask.get(name);
+        } else {
+            return null;
         }
-        return null;
     }
 
 }
