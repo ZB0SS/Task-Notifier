@@ -5,17 +5,18 @@ import java.time.chrono.ChronoLocalDateTime;
 import java.util.*;
 
 public class Task {
-    private String taskName;
-    private String time;
-    private boolean isAM;
-    public static ArrayList<Integer> times = new ArrayList<Integer>();
+    final private String taskName;
+    final private String time;
+    final private boolean isAM;
+    public static HashMap<String, String> tasks = new HashMap<String, String>();
+    public static HashMap<String, Task> getTask = new HashMap<String, Task>();
+
+    private boolean remove = false;
 
     public Task(String taskName, boolean isAM, String time) {
         this.taskName = taskName;
         this.isAM = isAM;
         this.time = time;
-
-        HashMap<String, String> tasks = new HashMap<String, String>();
 
         if (isAM) {
             tasks.put(taskName, time + " (AM)");
@@ -25,6 +26,8 @@ public class Task {
     }
 
     public void setTask() {
+        ArrayList<Integer> times = new ArrayList<Integer>();
+
         String[] timesString = this.time.split(":");
         for (String time: timesString) {
             times.add(Integer.parseInt(time));
@@ -48,7 +51,9 @@ public class Task {
         TimerTask myTask = new TimerTask() {
             @Override
             public void run() {
-                System.out.println("Its time for your task " + taskName);
+                if (!remove) {
+                   System.out.println("Its time for your task " + taskName);
+                }
             }
         };
 
@@ -59,23 +64,29 @@ public class Task {
         return taskName;
     }
 
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
     public boolean isAM() {
         return isAM;
-    }
-
-    public void setAM(boolean AM) {
-        isAM = AM;
     }
 
     public String getTime() {
         return time;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setRemove(boolean remove) {
+        this.remove = remove;
+        if (remove) {
+            tasks.remove(this.taskName);
+        }
+
     }
+
+    public static Task getTaskByTaskName(String name) {
+        for (String task: getTask.keySet()) {
+            if (Objects.equals(task, name)) {
+                return  getTask.get(task);
+            }
+        }
+        return null;
+    }
+
 }

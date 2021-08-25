@@ -12,7 +12,10 @@ public class CommandListener extends Thread{
 
     private void listen(String input, Scanner i) {
         if (Objects.equals(input, "help")) {
-            System.out.println("ok");
+            System.out.println("list - Lists all your tasks \n" +
+                                "create - creates a new task \n" +
+                                "remove + task name -removes a task\n" +
+                                "find + task name - gets you the information of a task");
         }
         input = i.nextLine();
         listen(input, i);
